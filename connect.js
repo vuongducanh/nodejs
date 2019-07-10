@@ -31,6 +31,17 @@ app.get('/api/users', function(req, res) {
   });
 })
 
+//search user
+app.get('/api/users/filter-user', function(req, res) {
+  let paramsSearch = req.query.search
+
+  connection.query('SELECT * from users where username like "%' + paramsSearch + '%"',
+  function(err, results) {
+    if (err) throw err;
+    return res.send({ message: 'success', data: results, message: 'users list.', status: 200 })
+  })
+})
+
 // create user
 app.post('/api/users', function(req, res) {
   let reqUsers = {
