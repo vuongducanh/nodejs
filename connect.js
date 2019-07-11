@@ -35,7 +35,7 @@ app.get('/api/users', function(req, res) {
 app.get('/api/users/filter-user', function(req, res) {
   let paramsSearch = req.query.search
 
-  connection.query('SELECT * from users where username like "%' + paramsSearch + '%"',
+  connection.query('SELECT * from users where username like "%' + paramsSearch + '%" ORDER BY -id',
   function(err, results) {
     if (err) throw err;
     return res.send({ message: 'success', data: results, message: 'users list.', status: 200 })
@@ -80,7 +80,12 @@ app.put('/api/users/:id', function (req, res) {
 
   connection.query("UPDATE users SET ? WHERE id = ?", [reqUpdateUser, req.params.id], function (error, results) {
       if (error) throw error;
-      return res.send({ error: false, data: results, message: 'user has been updated successfully.' })
+      var sql = `SELECT * from users where id = ${req.params.id}`
+
+      connection.query(sql, function (error, result) {
+        if (error) throw error
+        return res.send({ error: false , data: result, message: 'user has been updated successfully.', status: 200 })
+      })
   });
 });
 
@@ -97,5 +102,5 @@ app.delete('/api/users/:id', function (req, res) {
   });
 });
 
-app.listen(3000)
+app.listen(9000)
 
